@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -6,47 +5,45 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        name:'A',
-        room:0
+      name: "",
     };
   }
 
-
-
   render() {
-    
     return (
-      <div className="container mt-5 w-50">
-        <h1>Login</h1>
-        <form>
-          <div className="form-group">
-            <label>Name</label>
-            <div className="control">
+      <div className="row vh-100 ">
+        <div className="mx-auto my-auto">
+          <form>
+            <div className="form-group">
+              <label for="nameInput" style={{ marginBottom: "-2px" }}>
+                Name
+              </label>
               <input
+                type="name"
                 className="form-control"
-                type="text"
-                name="name"
-                onChange={this.onChange}
+                id="nameInput1"
+                aria-describedby="nameHelp"
+                style={{ width: "200px" }}
+                onChange={this.props.onNameChange}
+                minLength="1"
+                maxLength="20"
                 required
               />
+              <small id="nameHelp" className="form-text text-muted">
+                Enter your name to start chattin'
+              </small>
+              <div className="text-right" style={{ width: "200px" }}>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-primary mt-2"
+                  onClick={() => this.props.enterChat()}
+                >
+                  Let's go
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="form-group">
-            <label>Room</label>
-            <div className="control">
-              <input
-                className="form-control"
-                type="number"
-                name="room"
-                onChange={this.onChange}
-                required
-              />
-            </div>
-          </div>
-          <Link to = {`/chat`}>
-            <button className = "Join chat">Join chat</button>
-          </Link>
-        </form>
+          </form>
+        </div>
       </div>
     );
   }
