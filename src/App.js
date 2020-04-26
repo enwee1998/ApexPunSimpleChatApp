@@ -1,35 +1,58 @@
-import React, { Component } from "react";
+
+import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle";
-import Login from "../src/components/Login";
+import io from 'socket.io-client';
+import {USER_CONNECTED, LOGOUT} from "./Communicate";
+import Login from './components/Login';
 
+const socketURL = 'http://localhost:5000';
 
-class App extends Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "",
-      isLogin: false,
+        socket:null,
+        user:null
     };
   }
+  
+  componentWillMount(){
+    this.initSocket();
+  }
 
-  onNameChange = (e) => {
-    e.preventDefault();
-    this.setState({ name: e.target.value });
-    console.log(this.state.name);
-  };
+  // initialize socket
+  initSocket = () => {
+    const socket = io.connect(socketURL);
+    //socket connect to server
+    socket.on('connect', ()=>{
+      console.log("User's connected to server");
+    });
+    this.setState({socket});
+  }
 
-  enterChat = () => {
-    if (this.state.name) this.setState({ isLogin: true });
-  };
+  // send user + ( USER_CONNECTED ) to server
+  setUser = (user) => {
+    const {socket} = this.state;
+    socket.emit(USER_CONNECTED, user);
+    this.setState({user});
+  }
+
+  // send status (LOGOUT) to server and set state of user to null
+  logout = () => {
+    const { socket} = this.state;
+    socket.emit(LOGOUT);
+    this.setState({user:null});
+  }
 
   render() {
-    const { name, isLogin } = this.state;
-    if (name && isLogin) return <div>Yay!</div>;
-    else
-      return (
-        <Login onNameChange={this.onNameChange} enterChat={this.enterChat} />
-      );
+    const {title} = this.props
+    const {socket} = this.state
+    return (
+      <div className="container">
+        <Login socket={socket} setUser={this.setUser}/>
+      </div>
+    );
   }
 }
 
