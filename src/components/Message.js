@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 
-class Chat extends Component {
+class Message extends Component {
   state = {};
   render() {
     return;
   }
 }
 
-export default Chat;
+export default Message;

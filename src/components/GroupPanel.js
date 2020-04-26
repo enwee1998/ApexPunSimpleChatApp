@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 
-class Chat extends Component {
+class GroupPanel extends Component {
   state = {};
   render() {
     return;
   }
 }
 
-export default Chat;
+export default GroupPanel;
