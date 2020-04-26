@@ -1,55 +1,63 @@
-
 import React from "react";
-import { Link } from "react-router-dom";
+import {VERIFY_USER} from '../Communicate';
+
 
 class Login extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-        name:'A',
-        room:0
-    };
-  }
+    constructor(props) {
+      super(props);
+      this.state = {
+          username:"",
+          error:""
+      };
+    }
 
-
-
-  render() {
+    // if isUser is true -> setError, if isUser is false -> call setUser from main
+    setUser = ({user, isUser})=>{
+        console.log(user,isUser);
+		if(isUser){
+			this.setError("User name taken")
+		}else{
+			this.setError("")
+			this.props.setUser(user)
+		}
+    }
     
-    return (
-      <div className="container mt-5 w-50">
-        <h1>Login</h1>
-        <form>
-          <div className="form-group">
-            <label>Name</label>
-            <div className="control">
-              <input
-                className="form-control"
-                type="text"
-                name="name"
-                onChange={this.onChange}
-                required
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label>Room</label>
-            <div className="control">
-              <input
-                className="form-control"
-                type="number"
-                name="room"
-                onChange={this.onChange}
-                required
-              />
-            </div>
-          </div>
-          <Link to = {`/chat`}>
-            <button className = "Join chat">Join chat</button>
-          </Link>
-        </form>
-      </div>
-    );
-  }
-}
+    setError = (error) =>{
+        this.setState({error})
+    }
+    
+    onSubmit = (e) => {
+        e.preventDefault()
+        const {socket} = this.props
+        const {username} = this.state
+        // socket.io sends object username + VERIFY_USER and do setUser(see comment above)  
+        socket.emit(VERIFY_USER, username, this.setUser)
+    }
 
-export default Login;
+    onChange = (e) => {
+        this.setState({username:e.target.value})
+    }
+  
+    render() {
+      const {username, error} = this.state
+      return (
+        <div className="login">
+            <form onSubmit = {this.onSubmit} className="login-form">
+                    <label>Name</label>
+                        <input
+                            ref={(input)=>{ this.textInput = input }}
+                            type="text"
+                            id="username"
+                            value={username}
+                            id="username"
+                            onChange={this.onChange}
+                            required
+                        />
+                        <div className="error">{error ? error:null}</div>
+            </form>
+        </div>
+      );
+    }
+  }
+  
+  export default Login;

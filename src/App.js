@@ -1,11 +1,12 @@
-import React from "react";
-import {BrowserRouter as Router, Route} from 'react-router-dom';
-import Login from '../src/components/Login';
+import React, { Component } from "react";
+import Main from './components/Main';
 
-const App = () => (
-  <Router>
-    <Route path='/' exact component = {Login}/>
-  </Router>
-)
+class App extends Component{
+  render(){
+    return(
+      <Main title = "Chat App"/>
+    );
+  }
+}
 
 export default App;
