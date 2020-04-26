@@ -1,7 +1,6 @@
 import React from "react";
 import {VERIFY_USER} from '../Communicate';
 
-
 class Login extends React.Component {
     constructor(props) {
       super(props);
@@ -15,7 +14,7 @@ class Login extends React.Component {
     setUser = ({user, isUser})=>{
         console.log(user,isUser);
 		if(isUser){
-			this.setError("User name taken")
+			this.setError("Username taken")
 		}else{
 			this.setError("")
 			this.props.setUser(user)
