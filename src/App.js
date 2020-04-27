@@ -5,6 +5,7 @@ import "bootstrap/dist/js/bootstrap.bundle";
 import io from 'socket.io-client';
 import {USER_CONNECTED, LOGOUT} from "./Communicate";
 import Login from './components/Login';
+import ChatBox from './components/chat/ChatBox';
 
 const socketURL = 'http://localhost:5000';
 
@@ -47,11 +48,16 @@ class App extends React.Component {
 
   render() {
     const {title} = this.props
-    const {socket} = this.state
+    const {socket, user} = this.state
     return (
       <div className="container">
-        <Login socket={socket} setUser={this.setUser}/>
-      </div>
+        {
+          !user ?
+          <Login socket={socket} setUser={this.setUser}/>
+          :
+          <ChatBox socket={socket} user={user} logout={this.logout}/>
+        }
+          </div>
     );
   }
 }

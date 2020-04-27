@@ -48,11 +48,11 @@ class Login extends React.Component {
                             type="text"
                             id="username"
                             value={username}
-                            id="username"
                             onChange={this.onChange}
                             required
                         />
                         <div className="error">{error ? error:null}</div>
+                        <button className = "">Teamy</button>
             </form>
         </div>
       );
