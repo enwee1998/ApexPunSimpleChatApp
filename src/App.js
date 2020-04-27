@@ -1,4 +1,3 @@
-
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle";
@@ -7,18 +6,18 @@ import {USER_CONNECTED, LOGOUT} from "./Communicate";
 import Login from './components/Login';
 import ChatBox from './components/chat/ChatBox';
 
-const socketURL = 'http://localhost:5000';
+const socketURL = "http://localhost:5000";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        socket:null,
-        user:null
+      socket: null,
+      user: null,
     };
   }
-  
-  componentWillMount(){
+
+  componentWillMount() {
     this.initSocket();
   }
 
@@ -26,25 +25,29 @@ class App extends React.Component {
   initSocket = () => {
     const socket = io.connect(socketURL);
     //socket connect to server
-    socket.on('connect', ()=>{
+    socket.on("connect", () => {
       console.log("User's connected to server");
     });
-    this.setState({socket});
-  }
+    this.setState({ socket });
+  };
 
   // send user + ( USER_CONNECTED ) to server
   setUser = (user) => {
-    const {socket} = this.state;
+    const { socket } = this.state;
     socket.emit(USER_CONNECTED, user);
-    this.setState({user});
-  }
+    this.setState({ user });
+  };
 
   // send status (LOGOUT) to server and set state of user to null
   logout = () => {
-    const { socket} = this.state;
+    const { socket } = this.state;
     socket.emit(LOGOUT);
-    this.setState({user:null});
-  }
+    this.setState({ user: null });
+  };
+
+  logoutChat = () => {
+    if (this.state.isLogin) this.setState({ isLogin: false });
+  };
 
   render() {
     const {title} = this.props
