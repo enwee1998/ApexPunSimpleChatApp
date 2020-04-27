@@ -1,12 +1,16 @@
-var app = require('http').createServer();
+const express = require("express");
+const app = express();
+const http = require("http");
+const server = http.createServer(app);
+// var app = require("http").createServer();
 const mongoose = require("mongoose");
-var io = module.exports.io = require('socket.io')(app);
+var io = (module.exports.io = require("socket.io")(server));
 
 // const router = require("./route");
 
 require("dotenv/config");
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 
 const socketManager = require("./socketManager");
 
@@ -23,10 +27,12 @@ db.once("open", function callback() {
 });
 //
 
-io.on('connection', socketManager);
+io.on("connection", socketManager);
 
-/*app.get("/", (req, res) => {
+app.get("/", (req, res) => {
   res.send("Test!!!");
-});*/
+});
 
-app.listen(PORT, () => {console.log("Application is running on port ", PORT);});
+server.listen(PORT, () => {
+  console.log("Application is running on port ", PORT);
+});

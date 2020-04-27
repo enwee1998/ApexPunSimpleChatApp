@@ -1,12 +1,12 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle";
-import io from 'socket.io-client';
-import {USER_CONNECTED, LOGOUT} from "./Communicate";
-import Login from './components/Login';
-import ChatBox from './components/chat/ChatBox';
+import io from "socket.io-client";
+import { USER_CONNECTED, LOGOUT } from "./Communicate";
+import Login from "./components/Login";
+import ChatBox from "./components/chat/ChatBox";
 
-const socketURL = "http://localhost:5000";
+const socketURL = "http://localhost:4000";
 
 class App extends React.Component {
   constructor(props) {
@@ -50,17 +50,16 @@ class App extends React.Component {
   };
 
   render() {
-    const {title} = this.props
-    const {socket, user} = this.state
+    const { title } = this.props;
+    const { socket, user } = this.state;
     return (
       <div className="container">
-        {
-          !user ?
-          <Login socket={socket} setUser={this.setUser}/>
-          :
-          <ChatBox socket={socket} user={user} logout={this.logout}/>
-        }
-          </div>
+        {!user ? (
+          <Login socket={socket} setUser={this.setUser} />
+        ) : (
+          <ChatBox socket={socket} user={user} logout={this.logout} />
+        )}
+      </div>
     );
   }
 }
