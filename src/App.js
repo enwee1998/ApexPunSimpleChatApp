@@ -4,7 +4,7 @@ import "bootstrap/dist/js/bootstrap.bundle";
 import io from "socket.io-client";
 import { USER_CONNECTED, LOGOUT } from "./Communicate";
 import Login from "./components/Login";
-import ChatBox from "./components/chat/ChatBox";
+import ChatBox from "./components/ChatBox";
 
 const socketURL = "http://localhost:4000";
 
