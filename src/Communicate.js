@@ -1,8 +1,8 @@
 // events that client communicates back and forth with server
 module.exports = {
-    COMMUNITY_CHAT : "COMMUNITY_CHAT",
+    GROUP_CHAT : "GROUP_CHAT",
     USER_CONNECTED : "USER_CONNECTED",
-    MESSAGE_RECIEVED : "MESSAGE_RECIEVED",
+    MESSAGE_RECEIVED : "MESSAGE_RECEIVED",
     MESSAGE_SENT : "MESSAGE_SENT",
     USER_DISCONNECTED : "USER_DISCONNECTED",
     TYPING : "TYPING",
