@@ -1,5 +1,6 @@
 import React from "react";
 import {VERIFY_USER} from '../Communicate';
+import './logincss.css'
 
 class Login extends React.Component {
     constructor(props) {
@@ -40,19 +41,24 @@ class Login extends React.Component {
     render() {
       const {username, error} = this.state
       return (
+        
         <div className="login">
+            <h2 className="apexpunchat">APEXPUN CHAT BY NOOBPUN</h2>
             <form onSubmit = {this.onSubmit} className="login-form">
-                    <label>Name</label>
-                        <input
+                    <div className="nameandtext">
+>                   <label className="name"> Name </label>
+                    <input
                             ref={(input)=>{ this.textInput = input }}
                             type="text"
                             id="username"
                             value={username}
                             onChange={this.onChange}
                             required
-                        />
-                        <div className="error">{error ? error:null}</div>
-                        <button className = "">Teamy</button>
+                    />
+                    <div className="error">{error ? error:null}</div>
+                    </div>
+                    <button type="button" class="btn btn-warning">Submit</button>
+                      
             </form>
         </div>
       );
