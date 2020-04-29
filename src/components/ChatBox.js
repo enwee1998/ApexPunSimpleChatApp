@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import GroupPanel from './GroupPanel';
+import Message from './Message';
 
 class ChatBox extends Component {
 	constructor(props) {
@@ -20,6 +21,7 @@ class ChatBox extends Component {
 		const { groups, activeGroup } = this.state
 		return (
 			<div className="container">
+				
 				<GroupPanel
                     logout = {logout}
                     groups={groups}
@@ -28,6 +30,9 @@ class ChatBox extends Component {
                     setActiveGroup={this.setActiveGroup}
 
                 />
+				<Message/>
+				
+
 			</div>
 		);
 	}
