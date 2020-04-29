@@ -1,77 +1,90 @@
-import React, { Component } from 'react';
-import GroupPanel from './GroupPanel';
-import Message from './Message';
-import ChatInput from './ChatInput';
-import {MESSAGE_SENT, TYPING, GROUP_CHAT, MESSAGE_RECEIVED} from '../Communicate';
+import React, { Component } from "react";
+import GroupPanel from "./GroupPanel";
+import Message from "./Message";
+import ChatInput from "./ChatInput";
+import {
+  MESSAGE_SENT,
+  TYPING,
+  GROUP_CHAT,
+  MESSAGE_RECEIVED,
+} from "../Communicate";
 
 class ChatBox extends Component {
-	constructor(props) {
-	  super(props);	
-	
-	  this.state = {
-	  	groups:[],
-	  	activeGroup:null
-	  };
-	}
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      groups: [],
+      activeGroup: null,
+    };
+  }
 	initSocket(socket){
 		socket.emit(GROUP_CHAT, this.resetGroup)
 		socket.on('connect', ()=>{
 			socket.emit(GROUP_CHAT, this.resetGroup)
 		})
-	}
+  	}
 
 	componentDidMount(){
 		const {socket} = this.props
 		this.initSocket(socket)
 	}
 
-	resetGroup = (groupChat) =>{
-		return this.addGroup(groupChat, true)
-	}
+  
 
-	addGroup = (groupChat,isReset = false) => {
-		const {socket} = this.props
-		const {groups} = this.state
-		const newGroup = isReset ? [groupChat] : [...groups, groupChat]
-		this.setState({groups:newGroup, activeGroup : isReset ? groupChat : this.state.activeGroup})
+	resetGroup = (groupChat) => {
+		return this.addGroup(groupChat, true);
+	};
 
-		const messaging = `${MESSAGE_RECEIVED} : ${groupChat.id}`
-		const typing = `${TYPING} : ${groupChat.id}`
-		
-		socket.on(typing, this.updateTyping(groupChat.id))
+	addGroup = (groupChat, isReset = false) => {
+		const { socket } = this.props;
+		const { groups } = this.state;
+		const newGroup = isReset ? [groupChat] : [...groups, groupChat];
+		this.setState({
+		groups: newGroup,
+		activeGroup: isReset ? groupChat : this.state.activeGroup,
+		});
 
-		socket.on(messaging, this.addMessageToChat(groupChat.id))
-	}
+		const messaging = `${MESSAGE_RECEIVED} : ${groupChat.id}`;
+		const typing = `${TYPING} : ${groupChat.id}`;
 
-	addMessageToChat = (chatID) =>{
-		return message => {
-			const {groups} = this.state
-			let newGroup = groups.map((chat)=>{
-				if(chat.id === chatID) chat.messages.push(message)
-				return chat
-			})
-			this.setState({groups:newGroup})
-		}
-	}
+    socket.on(typing, this.updateTyping(groupChat.id));
 
-	updateTyping = (chatID) => {
+    socket.on(messaging, this.addMessageToChat(groupChat.id));
+  };
 
-	}
+	addMessageToChat = (chatID) => {
+		return (message) => {
+		const { groups } = this.state;
+		let newGroup = groups.map((chat) => {
+			if (chat.id === chatID) chat.messages.push(message);
+			return chat;
+		});
+		this.setState({ groups: newGroup });
+		};
+	};
+
+	updateTyping = (chatID) => {};
 
 	sendMessage = (groupID, message) => {
-		const {socket} = this.props
-		socket.emit(MESSAGE_SENT, {groupID, message})
-	}
+		const { socket } = this.props;
+		socket.emit(MESSAGE_SENT, { groupID, message });
+	};
 
-	sendTyping = (groupID, isTyping) => {
-		const {socket} = this.props
-		socket.emit(TYPING, {groupID, isTyping})
-	}
 
 	setActiveGroup = (activeGroup)=>{
 		this.setState({activeGroup})
 	}
+
+	sendTyping = (groupID, isTyping) => {
+		const { socket } = this.props;
+		socket.emit(TYPING, { groupID, isTyping });
+	};
+	
+  	setActiveGroup = (activeGroup) => {
+		this.setState({ activeGroup });
+	};
+
 	render() {
 		const { user, logout } = this.props
 		const { groups, activeGroup } = this.state
