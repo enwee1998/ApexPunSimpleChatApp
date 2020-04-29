@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 
+// lastestMessage is a message that will appear under group name (นึกถึงข้อความล่าสุดในไลน์อะ)
+// chatName คือชื่อ group ที่จะมา display ใน group panel (อาจจะเขียนส่งเป็น props ไปใน Group.js)
+
 class GroupPanel extends Component {
   constructor(props) {
     super(props);
@@ -42,10 +45,10 @@ class GroupPanel extends Component {
 						{
 						groups.map((groupChat)=>{
 							if(groupChat.name){
-								const lastMessage = groupChat.messages[groupChat.messages.length - 1];
+								const lastestMessage = groupChat.messages[groupChat.messages.length - 1];
 								const chatName = groupChat.users.find((name)=>{
 									return name !== user.name
-								}) || "Community" 
+								}) || "Group A" 
 								const classNames = (activeGroup && activeGroup.id === groupChat.id) ? 'active' : ''
 								
 								return(
@@ -54,10 +57,9 @@ class GroupPanel extends Component {
 									className={`user ${classNames}`}
 									onClick={ ()=>{ setActiveGroup(groupChat) } }
 									>
-									<div className="user-photo">{chatName[0].toUpperCase()}</div>
 									<div className="user-info">
 										<div className="name">{chatName}</div>
-										{lastMessage && <div className="last-message">{lastMessage.message}</div>}
+										{lastestMessage && <div className="last-message">{lastestMessage.message}</div>}
 									</div>
 									
 								</div>
@@ -69,11 +71,12 @@ class GroupPanel extends Component {
 						}
 						
 					</div>
-					<div className="current-user">
-						<span>{user.name}</span>
+					<div className="align-bottom">
+						<div>{user.name}
 						<button onClick={()=>{logout()}} title="Logout" className="logout">
 								Logout
 						</button>
+            </div>
 					</div>
         </div>
       

@@ -14,8 +14,8 @@ class ChatBox extends Component {
     super(props);
 
     this.state = {
-      groups: [],
-      activeGroup: null,
+      groups: [], //list of groups
+      activeGroup: null, //which group is selected right now
     };
   }
 	initSocket(socket){
@@ -36,6 +36,7 @@ class ChatBox extends Component {
 		return this.addGroup(groupChat, true);
 	};
 
+	// add group, if isReset is true, set this group to active
 	addGroup = (groupChat, isReset = false) => {
 		const { socket } = this.props;
 		const { groups } = this.state;
@@ -53,25 +54,25 @@ class ChatBox extends Component {
     socket.on(messaging, this.addMessageToChat(groupChat.id));
   };
 
-	addMessageToChat = (chatID) => {
+	addMessageToGroup = (groupID) => {
 		return (message) => {
 		const { groups } = this.state;
-		let newGroup = groups.map((chat) => {
-			if (chat.id === chatID) chat.messages.push(message);
-			return chat;
+		let newGroup = groups.map((groupChat) => {
+			if (groupChat.id === groupID) groupChat.messages.push(message);
+			return groupChat;
 		});
 		this.setState({ groups: newGroup });
 		};
 	};
 
-	updateTyping = (chatID) => {};
+	updateTyping = (groupID) => {};
 
 	sendMessage = (groupID, message) => {
 		const { socket } = this.props;
 		socket.emit(MESSAGE_SENT, { groupID, message });
 	};
 
-
+	// set which group is currently selected
 	setActiveGroup = (activeGroup)=>{
 		this.setState({activeGroup})
 	}
@@ -79,10 +80,6 @@ class ChatBox extends Component {
 	sendTyping = (groupID, isTyping) => {
 		const { socket } = this.props;
 		socket.emit(TYPING, { groupID, isTyping });
-	};
-	
-  	setActiveGroup = (activeGroup) => {
-		this.setState({ activeGroup });
 	};
 
 	render() {
