@@ -32,6 +32,8 @@ module.exports = function (socket) {
   //logout
 };
 
+function groupEmission() {}
+
 function addUser(userList, user) {
   let newList = Object.assign({}, userList);
   newList[user.name] = user;
