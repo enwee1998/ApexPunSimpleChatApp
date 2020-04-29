@@ -3,7 +3,7 @@ const app = express();
 const http = require("http");
 const server = http.createServer(app);
 // var app = require("http").createServer();
-const mongoose = require("mongoose");
+const mongoose = require("mongoose").set("debug", true);
 var io = (module.exports.io = require("socket.io")(server));
 
 // const router = require("./route");

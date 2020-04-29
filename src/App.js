@@ -4,6 +4,8 @@ import "bootstrap/dist/js/bootstrap.bundle";
 import io from "socket.io-client";
 import { USER_CONNECTED, LOGOUT } from "./Communicate";
 import Login from "./components/Login";
+import Navbar from "./components/Navbar";
+import GroupPanel2 from "./components/GroupPanel2";
 import ChatBox from "./components/ChatBox";
 
 const socketURL = "http://localhost:4000";
@@ -14,6 +16,7 @@ class App extends React.Component {
     this.state = {
       socket: null,
       user: null,
+      groups: [],
     };
   }
 
@@ -31,11 +34,21 @@ class App extends React.Component {
     this.setState({ socket });
   };
 
+  getGroups() {
+    const { socket } = this.state;
+    const username = this.state.user.name;
+    socket.emit("getGroups", username);
+    socket.on("getGroupResponse", (chatGroups) => {
+      this.setState({ groups: chatGroups });
+    });
+  }
+
   // send user + ( USER_CONNECTED ) to server
   setUser = (user) => {
     const { socket } = this.state;
     socket.emit(USER_CONNECTED, user);
     this.setState({ user });
+    this.getGroups();
   };
 
   // send status (LOGOUT) to server and set state of user to null
@@ -43,10 +56,6 @@ class App extends React.Component {
     const { socket } = this.state;
     socket.emit(LOGOUT);
     this.setState({ user: null });
-  };
-
-  logoutChat = () => {
-    if (this.state.isLogin) this.setState({ isLogin: false });
   };
 
   render() {
@@ -57,7 +66,20 @@ class App extends React.Component {
         {!user ? (
           <Login socket={socket} setUser={this.setUser} />
         ) : (
-          <ChatBox socket={socket} user={user} logout={this.logout} />
+          // <ChatBox socket={socket} user={user} logout={this.logout} />
+          <div className="row vh-100">
+            <div className="col-8 mx-auto my-auto">
+              <div className="container-fluid">
+                <Navbar name={user.name} logout={this.logout} />
+                <div className="row">
+                  <div className="col-4">
+                    <GroupPanel2 groups={this.state.groups} />
+                  </div>
+                  <div className="col-8">Chat</div>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     );

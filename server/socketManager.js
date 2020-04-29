@@ -1,8 +1,17 @@
 const io = require("./index.js").io;
 const mongoose = require("mongoose");
 const User = require("./models/User");
+const Group = require("./models/Group");
 
-const { VERIFY_USER, USER_CONNECTED, USER_DISCONNECTED, LOGOUT, GROUP_CHAT } = require("../src/Communicate");
+// mongoose.connection;
+
+const {
+  VERIFY_USER,
+  USER_CONNECTED,
+  USER_DISCONNECTED,
+  LOGOUT,
+  GROUP_CHAT,
+} = require("../src/Communicate");
 const { createUser, createMessage, createChat } = require("../src/manageChat");
 let connectedUsers = {};
 let groupChat = createChat();
@@ -22,36 +31,50 @@ module.exports = function (socket) {
   socket.on(USER_CONNECTED, (user) => {
     connectedUsers = addUser(connectedUsers, user);
     socket.user = user;
-
     //broadcast user connected
-    io.emit(USER_CONNECTED, connectedUsers);
-    console.log("User connect :",connectedUsers);
+    // io.emit(USER_CONNECTED, connectedUsers);
+    // console.log("User connect :",connectedUsers);
+  });
+
+  socket.on("getGroups", (username) => {
+    Group.find().exec(function (err, groups) {
+      var chatGroups = [];
+      if (err) throw err;
+      groups.map((group) => {
+        chatGroups.push(group.groupName);
+      });
+      io.emit("getGroupResponse", chatGroups);
+      console.log(chatGroups);
+    });
   });
 
   //user disconnects
-  socket.on('disconnect',()=>{
-    if("user" in socket){
+  socket.on("disconnect", () => {
+    if ("user" in socket) {
       connectedUsers = removeUser(connectedUsers, socket.user.name);
       //broadcast user disconnected
       io.emit(USER_DISCONNECTED, connectedUsers);
-      console.log("someone's disconnected, who is in the chat is :",connectedUsers);
+      console.log(
+        "someone's disconnected, who is in the chat is :",
+        connectedUsers
+      );
     }
-  })
+  });
 
   //logout
-  socket.on(LOGOUT, ()=>{
+  socket.on(LOGOUT, () => {
     connectedUsers = removeUser(connectedUsers, socket.user.name);
     io.emit(USER_DISCONNECTED, connectedUsers);
     console.log("someone's logout, who is in the chat is :", connectedUsers);
-  })
+  });
 
   //get group chat
-  socket.on(GROUP_CHAT, (callback)=>{
-    callback(groupChat)
-  })
+  socket.on(GROUP_CHAT, (callback) => {
+    callback(groupChat);
+  });
 };
 
-function groupEmission() {}
+function getGroups(username) {}
 
 function addUser(userList, user) {
   let newList = Object.assign({}, userList);
@@ -71,7 +94,6 @@ function removeUser(userList, username) {
   delete newList[username];
   return newList;
 }
-
 
 function isUser(userList, username) {
   return username in userList;
