@@ -57,7 +57,7 @@ class Login extends React.Component {
                     />
                     <div className="error">{error ? error:null}</div>
                     </div>
-                    <button type="button" class="btn btn-warning">Submit</button>
+                    <button type="button" className="btn btn-warning">Submit</button>
                       
             </form>
         </div>

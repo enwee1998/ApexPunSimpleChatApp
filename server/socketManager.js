@@ -2,10 +2,10 @@ const io = require("./index.js").io;
 const mongoose = require("mongoose");
 const User = require("./models/User");
 
-const { VERIFY_USER, USER_CONNECTED, LOGOUT } = require("../src/Communicate");
+const { VERIFY_USER, USER_CONNECTED, USER_DISCONNECTED, LOGOUT, GROUP_CHAT } = require("../src/Communicate");
 const { createUser, createMessage, createChat } = require("../src/manageChat");
 let connectedUsers = {};
-
+let groupChat = createChat();
 module.exports = function (socket) {
   console.log("Socket ID :" + socket.id);
 
@@ -23,13 +23,32 @@ module.exports = function (socket) {
     connectedUsers = addUser(connectedUsers, user);
     socket.user = user;
 
+    //broadcast user connected
     io.emit(USER_CONNECTED, connectedUsers);
-    console.log(connectedUsers);
+    console.log("User connect :",connectedUsers);
   });
 
   //user disconnects
+  socket.on('disconnect',()=>{
+    if("user" in socket){
+      connectedUsers = removeUser(connectedUsers, socket.user.name);
+      //broadcast user disconnected
+      io.emit(USER_DISCONNECTED, connectedUsers);
+      console.log("someone's disconnected, who is in the chat is :",connectedUsers);
+    }
+  })
 
   //logout
+  socket.on(LOGOUT, ()=>{
+    connectedUsers = removeUser(connectedUsers, socket.user.name);
+    io.emit(USER_DISCONNECTED, connectedUsers);
+    console.log("someone's logout, who is in the chat is :", connectedUsers);
+  })
+
+  //get group chat
+  socket.on(GROUP_CHAT, (callback)=>{
+    callback(groupChat)
+  })
 };
 
 function addUser(userList, user) {
@@ -50,7 +69,7 @@ function removeUser(userList, username) {
   delete newList[username];
   return newList;
 }
-1;
+
 
 function isUser(userList, username) {
   return username in userList;

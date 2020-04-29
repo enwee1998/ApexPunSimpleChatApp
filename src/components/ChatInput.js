@@ -1,9 +1,21 @@
 import React, { Component } from "react";
 
 class ChatInput extends Component {
-  state = {};
+    constructor(props) {
+        super(props);	
+      
+        this.state = {
+            groups:[],
+            activeGroup:null
+        };
+      }
+
   render() {
-    return;
+    return(
+        <div>
+            yay
+        </div>
+    );
   }
 }
 

@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
 import GroupPanel from './GroupPanel';
-<<<<<<< HEAD
-import Message from './Message';
-||||||| merged common ancestors
-=======
 import Message from './Message';
 import ChatInput from './ChatInput';
 import {MESSAGE_SENT, TYPING, GROUP_CHAT, MESSAGE_RECEIVED} from '../Communicate';
->>>>>>> 047ef2951dfe56912bcefc8eb2a6121a594adac8
 
 class ChatBox extends Component {
 	constructor(props) {
@@ -19,9 +14,16 @@ class ChatBox extends Component {
 	  };
 	}
 
+	initSocket(socket){
+		socket.emit(GROUP_CHAT, this.resetGroup)
+		socket.on('connect', ()=>{
+			socket.emit(GROUP_CHAT, this.resetGroup)
+		})
+	}
+
 	componentDidMount(){
 		const {socket} = this.props
-		socket.emit(GROUP_CHAT, this.resetGroup)
+		this.initSocket(socket)
 	}
 
 	resetGroup = (groupChat) =>{
@@ -46,7 +48,7 @@ class ChatBox extends Component {
 		return message => {
 			const {groups} = this.state
 			let newGroup = groups.map((chat)=>{
-				if(chat.id == chatID) chat.messages.push(message)
+				if(chat.id === chatID) chat.messages.push(message)
 				return chat
 			})
 			this.setState({groups:newGroup})
@@ -74,49 +76,43 @@ class ChatBox extends Component {
 		const { user, logout } = this.props
 		const { groups, activeGroup } = this.state
 		return (
-			<div className="container">
-				
-				<GroupPanel
-                    logout = {logout}
-                    groups={groups}
-                    user={user}
-                    activeGroup={activeGroup}
-                    setActiveGroup={this.setActiveGroup}
-                />
-<<<<<<< HEAD
-				<Message/>
-				
-
-||||||| merged common ancestors
-=======
-				<div className = "chatroom container">
-					{
-						activeGroup != null ? (
-							<div className = "chatroom">
-								<Message
-									messages={activeGroup.messages}
-									user={user}
-									typingUser={activeGroup.typingUser}
-								/>
-								<ChatInput
-									sendMessage={(message)=>{
-										this.sendMessage(activeGroup.id, message)
-									}}
-									sendTyping={(isTyping)=>{
-										this.sendTyping(activeGroup.id, isTyping)
-									}}
-								/>
+				<div className="row">
+					<div className="col-md-4 text-center" style={{backgroundColor:"orange", height:"100vh"}}>
+						<GroupPanel
+							logout = {logout}
+							groups={groups}
+							user={user}
+							activeGroup={activeGroup}
+							setActiveGroup={this.setActiveGroup}
+						/>
+					</div>
+					<div className = "col-md-8 text-center" style={{backgroundColor:"lightblue", height:"100vh"}}>
+						{
+							activeGroup !== null ? (
+								<div className = "chatroom">
+									<Message
+										messages={activeGroup.messages}
+										user={user}
+										typingUser={activeGroup.typingUser}
+									/>
+									<ChatInput
+										sendMessage={(message)=>{
+											this.sendMessage(activeGroup.id, message)
+										}}
+										sendTyping={(isTyping)=>{
+											this.sendTyping(activeGroup.id, isTyping)
+										}}
+									/>
+								</div>
+							):
+							<div className='choose chatroom'>
+								
+									<h3>Please choose group chat</h3>
+								
 							</div>
-						):
-						<div className='row justify-content-end'>
-							<div className="col-8 col-2 fixed-top text-center" style={{backgroundColor:'blue', height:'100%'}}>
-								<h3>Please choose group chat</h3>
-							</div>
-						</div>
-					}
+						}
+					</div>
 				</div>
->>>>>>> 047ef2951dfe56912bcefc8eb2a6121a594adac8
-			</div>
 		);
 	}
 }

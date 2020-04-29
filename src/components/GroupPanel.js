@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import Group from './Group.js'
 
 class GroupPanel extends Component {
   constructor(props) {
     super(props);
+    this.userRef = React.createRef();
     this.state = {
-        receiver:""
+        receiver:"" 
     };
   }
 
@@ -13,15 +13,20 @@ class GroupPanel extends Component {
     this.setState({receiver:e.target.value})
   }
 
+  onSubmit = (e) => {
+    e.preventDefault()
+    const {receiver} = this.state
+  }
+
   render() {
-    const { groups, activeGroup, user, setActiveGroup, logput} = this.props
+    const { groups, activeGroup, user, setActiveGroup, logout} = this.props
     const {receiver} = this.state
     return(
       <div className="container">
-        <div className="col-3 fixed-top one text-center" style={{backgroundColor:'#b06ba1', height:'100%'}}> 
-          <div style={{paddingTop:"10vh", paddingBottom : "3vh"}}>
-            Chat
-          </div>
+         <div className="app-name">Group</div>
+						<div className="menu">
+							
+						</div>
           <form onSubmit={this.onSubmit} className="text input">
             <input  
                 type="text"
@@ -29,17 +34,49 @@ class GroupPanel extends Component {
                 onChange={this.onChange}
                 style={{width:"80%"}}/>
           </form>
-          <div>
-              <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">group
-              <span class="caret"></span></button>
-              <ul class="dropdown-menu">
-                <li><a href="#">พันกาก</a></li>
-                <li><a href="#">พันnoob</a></li>
-                <li><a href="#">พันชนบ่อตายประจำ</a></li>
-              </ul>
-          </div>
+          <div 
+						className="users" 
+						ref={this.userRef} 
+						onClick={(e)=>{ (e.target === this.userRef.current && setActiveGroup(null) )}}>
+						
+						{
+						groups.map((groupChat)=>{
+							if(groupChat.name){
+								const lastMessage = groupChat.messages[groupChat.messages.length - 1];
+								const chatName = groupChat.users.find((name)=>{
+									return name !== user.name
+								}) || "Community" 
+								const classNames = (activeGroup && activeGroup.id === groupChat.id) ? 'active' : ''
+								
+								return(
+								<div 
+									key={groupChat.id} 
+									className={`user ${classNames}`}
+									onClick={ ()=>{ setActiveGroup(groupChat) } }
+									>
+									<div className="user-photo">{chatName[0].toUpperCase()}</div>
+									<div className="user-info">
+										<div className="name">{chatName}</div>
+										{lastMessage && <div className="last-message">{lastMessage.message}</div>}
+									</div>
+									
+								</div>
+							)
+							}
+
+							return null
+						})	
+						}
+						
+					</div>
+					<div className="current-user">
+						<span>{user.name}</span>
+						<button onClick={()=>{logout()}} title="Logout" className="logout">
+								Logout
+						</button>
+					</div>
         </div>
-      </div>
+      
     );
   }
 }
