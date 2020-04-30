@@ -2,6 +2,7 @@ const io = require("./index.js").io;
 const mongoose = require("mongoose");
 const User = require("./models/User");
 const Group = require("./models/Group");
+const JoinGroup = require("./models/JoinGroup");
 
 // mongoose.connection;
 
@@ -43,8 +44,18 @@ module.exports = function (socket) {
       groups.map((group) => {
         chatGroups.push(group.groupName);
       });
-      io.emit("getGroupResponse", chatGroups);
-      console.log(chatGroups);
+      JoinGroup.find({
+        username: username,
+      }).exec(function (err, inGroup) {
+        var joinedGroups = [];
+        if (err) throw err;
+        if (inGroup) {
+          inGroup.map((group) => {
+            joinedGroups.push(group.groupName);
+          });
+        }
+        io.emit("getGroupResponse", { chatGroups, joinedGroups });
+      });
     });
   });
 

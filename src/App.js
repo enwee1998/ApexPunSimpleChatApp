@@ -17,6 +17,7 @@ class App extends React.Component {
       socket: null,
       user: null,
       groups: [],
+      joinedGroups: [],
     };
   }
 
@@ -38,8 +39,10 @@ class App extends React.Component {
     const { socket } = this.state;
     const username = this.state.user.name;
     socket.emit("getGroups", username);
-    socket.on("getGroupResponse", (chatGroups) => {
-      this.setState({ groups: chatGroups });
+    socket.on("getGroupResponse", (res) => {
+      this.setState({ groups: res.chatGroups });
+      this.setState({ joinedGroups: res.joinedGroups });
+      console.log(this.state.joinedGroups);
     });
   }
 
@@ -81,6 +84,7 @@ class App extends React.Component {
                   <div className="col-4">
                     <GroupPanel2
                       groups={this.state.groups}
+                      joinedGroups={this.state.joinedGroups}
                       addGroup={this.addGroup}
                     />
                   </div>

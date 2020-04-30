@@ -14,11 +14,12 @@ class GroupPanel2 extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { groups } = this.props;
+    const { groups, joinedGroups } = this.props;
     const { createGroupName } = this.state;
     if (
       groups !== nextProps.groups ||
-      createGroupName !== nextState.createGroupName
+      createGroupName !== nextState.createGroupName ||
+      joinedGroups !== nextProps.joinedGroups
     ) {
       return true;
     }
@@ -67,20 +68,24 @@ class GroupPanel2 extends Component {
           </div>
         </div>
         {this.props.groups.map((group) => (
-          <div className="btn-group btn-block mt-2" role="group">
+          <div key={group} className="btn-group btn-block mt-2" role="group">
             <button
               type="button"
-              className="col-9 btn btn-outline-secondary text-left"
+              className="col-8 btn btn-outline-secondary text-left"
               style={{ border: "none", borderRadius: "0" }}
             >
               {group}
             </button>
             <button
               type="button"
-              className="col-3 btn btn-success"
+              className={
+                this.props.joinedGroups.includes(group)
+                  ? "col-4 btn btn-danger"
+                  : "col-4 btn btn-success"
+              }
               style={{ borderRadius: "0" }}
             >
-              Join
+              {this.props.joinedGroups.includes(group) ? "Leave" : "Join"}
             </button>
           </div>
         ))}
