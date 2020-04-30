@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Message from "./Message";
 
 class ChatBox2 extends Component {
   constructor(props) {
@@ -28,7 +29,8 @@ class ChatBox2 extends Component {
           style={{ display: "flex", flexDirection: "column" }}
           style={{ height: "412px", maxHeight: "412px" }}
         >
-          Chatbox
+          <Message username={username} sender="Who knows?" />
+          <Message username={username} sender={username} />
         </div>
         <div
           className="container-fluid bg-white"
