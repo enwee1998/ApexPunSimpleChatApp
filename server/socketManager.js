@@ -37,6 +37,16 @@ module.exports = function (socket) {
     // console.log("User connect :",connectedUsers);
   });
 
+  socket.on("leaveGroup", (req) => {
+    JoinGroup.deleteOne(
+      { username: req.username, groupName: req.groupName },
+      function (err) {
+        if (err) throw err;
+        // deleted at most one tank document
+      }
+    );
+  });
+
   socket.on("joinGroup", (req) => {
     JoinGroup.find({ username: req.username, groupName: req.groupName }).exec(
       function (err, found) {

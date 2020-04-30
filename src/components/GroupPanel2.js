@@ -86,7 +86,7 @@ class GroupPanel2 extends Component {
               style={{ borderRadius: "0" }}
               onClick={
                 this.props.joinedGroups.includes(group)
-                  ? null
+                  ? () => this.props.leaveGroup(group)
                   : () => this.props.joinGroup(group)
               }
             >
