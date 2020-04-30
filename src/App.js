@@ -16,6 +16,7 @@ class App extends React.Component {
     this.state = {
       socket: null,
       user: null,
+      activeGroup: null,
       groups: [],
       joinedGroups: [],
     };
@@ -33,6 +34,11 @@ class App extends React.Component {
       console.log("User's connected to server");
     });
     this.setState({ socket });
+    socket.on("createGroupRespose", (groupName) => {
+      let { groups } = this.state;
+      groups.push(groupName);
+      this.setState({ groups });
+    });
   };
 
   getGroups() {
@@ -46,19 +52,22 @@ class App extends React.Component {
   }
 
   addGroup = (groupName) => {
-    let groups = this.state.groups;
+    const { socket } = this.state;
+    const username = this.state.user.name;
+    let { groups, joinedGroups } = this.state;
     groups.push(groupName);
+    joinedGroups.push(groupName);
     this.setState({ groups });
+    this.setState({ joinedGroups });
+    socket.emit("createGroup", { username, groupName });
   };
 
   leaveGroup = (groupName) => {
-    console.log("leave", groupName);
     const { socket } = this.state;
     const username = this.state.user.name;
     let { joinedGroups } = this.state;
     socket.emit("leaveGroup", { username, groupName });
     joinedGroups = joinedGroups.filter((group) => group !== groupName);
-    this.setState({ joinedGroups });
   };
 
   joinGroup = (groupName) => {

@@ -37,6 +37,23 @@ module.exports = function (socket) {
     // console.log("User connect :",connectedUsers);
   });
 
+  socket.on("createGroup", (req) => {
+    const { username, groupName } = req;
+    Group.find({ groupName: groupName }).exec(function (err, found) {
+      if (err) throw err;
+      if (!found.length) {
+        const newGroup = new Group({ groupName: groupName });
+        newGroup.save();
+        const newJoinedGroup = new JoinGroup({
+          username: username,
+          groupName: groupName,
+        });
+        newJoinedGroup.save();
+      }
+      socket.broadcast.emit("createGroupRespose", groupName);
+    });
+  });
+
   socket.on("leaveGroup", (req) => {
     JoinGroup.deleteOne(
       { username: req.username, groupName: req.groupName },
@@ -80,7 +97,7 @@ module.exports = function (socket) {
             joinedGroups.push(group.groupName);
           });
         }
-        io.emit("getGroupResponse", { chatGroups, joinedGroups });
+        socket.emit("getGroupResponse", { chatGroups, joinedGroups });
       });
     });
   });
@@ -106,12 +123,10 @@ module.exports = function (socket) {
   });
 
   //get group chat
-  socket.on(GROUP_CHAT, (callback) => {
-    callback(groupChat);
-  });
+  // socket.on(GROUP_CHAT, (callback) => {
+  //   callback(groupChat);
+  // });
 };
-
-function getGroups(username) {}
 
 function addUser(userList, user) {
   let newList = Object.assign({}, userList);
