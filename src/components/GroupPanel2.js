@@ -13,18 +13,18 @@ class GroupPanel2 extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const { groups, joinedGroups } = this.props;
-    const { createGroupName } = this.state;
-    if (
-      groups !== nextProps.groups ||
-      createGroupName !== nextState.createGroupName ||
-      joinedGroups !== nextProps.joinedGroups
-    ) {
-      return true;
-    }
-    return false;
-  }
+  //   shouldComponentUpdate(nextProps, nextState) {
+  //     const { groups, joinedGroups } = this.props;
+  //     const { createGroupName } = this.state;
+  //     if (
+  //       groups !== nextProps.groups ||
+  //       createGroupName !== nextState.createGroupName ||
+  //       joinedGroups !== nextProps.joinedGroups
+  //     ) {
+  //       return true;
+  //     }
+  //     return false;
+  //   }
 
   //   componentDidMount() {}
 
@@ -84,6 +84,11 @@ class GroupPanel2 extends Component {
                   : "col-4 btn btn-success"
               }
               style={{ borderRadius: "0" }}
+              onClick={
+                this.props.joinedGroups.includes(group)
+                  ? null
+                  : () => this.props.joinGroup(group)
+              }
             >
               {this.props.joinedGroups.includes(group) ? "Leave" : "Join"}
             </button>

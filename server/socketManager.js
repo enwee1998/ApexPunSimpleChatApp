@@ -37,6 +37,22 @@ module.exports = function (socket) {
     // console.log("User connect :",connectedUsers);
   });
 
+  socket.on("joinGroup", (req) => {
+    JoinGroup.find({ username: req.username, groupName: req.groupName }).exec(
+      function (err, found) {
+        if (err) throw err;
+        if (!found.length) {
+          console.log("save");
+          const newJoinedGroup = new JoinGroup({
+            username: req.username,
+            groupName: req.groupName,
+          });
+          newJoinedGroup.save();
+        }
+      }
+    );
+  });
+
   socket.on("getGroups", (username) => {
     Group.find().exec(function (err, groups) {
       var chatGroups = [];
