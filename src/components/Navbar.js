@@ -24,7 +24,7 @@ class Navbar extends Component {
           ApexPun Chat
         </div>
         <span class="navbar-text">
-          Logged in {this.state.name}
+          Logged in as <strong>{this.state.name}</strong>
           <button
             className="btn btn-sm btn-danger ml-2"
             onClick={() => this.props.logout()}

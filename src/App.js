@@ -43,6 +43,12 @@ class App extends React.Component {
     });
   }
 
+  addGroup = (groupName) => {
+    let groups = this.state.groups;
+    groups.push(groupName);
+    this.setState({ groups });
+  };
+
   // send user + ( USER_CONNECTED ) to server
   setUser = (user) => {
     const { socket } = this.state;
@@ -73,7 +79,10 @@ class App extends React.Component {
                 <Navbar name={user.name} logout={this.logout} />
                 <div className="row">
                   <div className="col-4">
-                    <GroupPanel2 groups={this.state.groups} />
+                    <GroupPanel2
+                      groups={this.state.groups}
+                      addGroup={this.addGroup}
+                    />
                   </div>
                   <div className="col-8">Chat</div>
                 </div>
