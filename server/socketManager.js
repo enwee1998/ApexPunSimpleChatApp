@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const User = require("./models/User");
 const Group = require("./models/Group");
 const JoinGroup = require("./models/JoinGroup");
+const Message = require("./models/Message");
 
 // mongoose.connection;
 
@@ -100,6 +101,32 @@ module.exports = function (socket) {
         socket.emit("getGroupResponse", { chatGroups, joinedGroups });
       });
     });
+  });
+
+  socket.on("sendMessage", (req) => {
+    const { username, message, activeGroup } = req;
+    const newMessage = new Message({
+      username: username,
+      message: message,
+      groupName: activeGroup,
+    });
+    newMessage.save((err) => {
+      Message.find()
+        .sort("timestamp")
+        .exec(function (err, messages) {
+          if (err) throw err;
+          io.emit("emitMessages", messages);
+        });
+    });
+  });
+
+  socket.on("getMessages", () => {
+    Message.find()
+      .sort("timestamp")
+      .exec(function (err, messages) {
+        if (err) throw err;
+        socket.emit("emitMessages", messages);
+      });
   });
 
   //user disconnects

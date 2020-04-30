@@ -19,7 +19,19 @@ class App extends React.Component {
       activeGroup: null,
       groups: [],
       joinedGroups: [],
+      messages: [],
     };
+
+    this.initSocket = this.initSocket.bind(this);
+    this.getGroups = this.getGroups.bind(this);
+    this.addGroup = this.addGroup.bind(this);
+    this.leaveGroup = this.leaveGroup.bind(this);
+    this.joinGroup = this.joinGroup.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
+    this.setActiveGroup = this.setActiveGroup.bind(this);
+    this.setUser = this.setUser.bind(this);
+    this.logout = this.logout.bind(this);
+    this.getMessages = this.getMessages.bind(this);
   }
 
   componentWillMount() {
@@ -39,6 +51,14 @@ class App extends React.Component {
       groups.push(groupName);
       this.setState({ groups });
     });
+    socket.on("emitMessages", (messages) => {
+      this.setState({ messages });
+    });
+  };
+
+  getMessages = () => {
+    const { socket } = this.state;
+    socket.emit("getMessages");
   };
 
   getGroups() {
@@ -52,14 +72,16 @@ class App extends React.Component {
   }
 
   addGroup = (groupName) => {
-    const { socket } = this.state;
-    const username = this.state.user.name;
-    let { groups, joinedGroups } = this.state;
-    groups.push(groupName);
-    joinedGroups.push(groupName);
-    this.setState({ groups });
-    this.setState({ joinedGroups });
-    socket.emit("createGroup", { username, groupName });
+    if (groupName.length) {
+      const { socket } = this.state;
+      const username = this.state.user.name;
+      let { groups, joinedGroups } = this.state;
+      groups.push(groupName);
+      joinedGroups.push(groupName);
+      this.setState({ groups });
+      this.setState({ joinedGroups });
+      socket.emit("createGroup", { username, groupName });
+    }
   };
 
   leaveGroup = (groupName) => {
@@ -69,6 +91,8 @@ class App extends React.Component {
     socket.emit("leaveGroup", { username, groupName });
     joinedGroups = joinedGroups.filter((group) => group !== groupName);
     this.setState({ joinedGroups });
+    if (groupName === this.state.activeGroup)
+      this.setState({ activeGroup: null });
   };
 
   joinGroup = (groupName) => {
@@ -80,12 +104,28 @@ class App extends React.Component {
     this.setState({ joinedGroups });
   };
 
+  sendMessage = (message) => {
+    const { socket, activeGroup } = this.state;
+    const username = this.state.user.name;
+    socket.emit("sendMessage", { username, message, activeGroup });
+    // socket.on("sendMessageResponse", (messages) => {
+    //   this.setState({ messages });
+    // });
+  };
+
+  setActiveGroup = (group) => {
+    this.setState({ activeGroup: group });
+    this.setState({ messages: [] });
+    this.getMessages();
+  };
+
   // send user + ( USER_CONNECTED ) to server
   setUser = (user) => {
     const { socket } = this.state;
     socket.emit(USER_CONNECTED, user);
     this.setState({ user });
     this.getGroups();
+    this.getMessages();
   };
 
   // send status (LOGOUT) to server and set state of user to null
@@ -93,6 +133,10 @@ class App extends React.Component {
     const { socket } = this.state;
     socket.emit(LOGOUT);
     this.setState({ user: null });
+    this.setState({ activeGroup: null });
+    this.setState({ groups: [] });
+    this.setState({ joinedGroups: [] });
+    this.setState({ messages: {} });
   };
 
   render() {
@@ -116,10 +160,17 @@ class App extends React.Component {
                         leaveGroup={this.leaveGroup}
                         joinGroup={this.joinGroup}
                         addGroup={this.addGroup}
+                        setActiveGroup={this.setActiveGroup}
+                        activeGroup={this.state.activeGroup}
                       />
                     </div>
                     <div className="col-8 padding-l-0">
-                      <ChatBox2 username={user.name} />
+                      <ChatBox2
+                        username={user.name}
+                        sendMessage={this.sendMessage}
+                        activeGroup={this.state.activeGroup}
+                        messages={this.state.messages}
+                      />
                     </div>
                   </div>
                 </div>

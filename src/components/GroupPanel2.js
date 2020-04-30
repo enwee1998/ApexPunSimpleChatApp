@@ -75,8 +75,16 @@ class GroupPanel2 extends Component {
           <div key={group} className="btn-group btn-block mt-2" role="group">
             <button
               type="button"
-              className="col-8 btn btn-outline-secondary text-left"
+              className={
+                "col-8 btn btn-outline-secondary text-left" +
+                (group === this.props.activeGroup ? " active" : "")
+              }
               style={{ border: "none", borderRadius: "0" }}
+              onClick={
+                this.props.joinedGroups.includes(group)
+                  ? () => this.props.setActiveGroup(group)
+                  : null
+              }
             >
               {group}
             </button>

@@ -6,8 +6,11 @@ class Message extends Component {
     this.state = {
       sender: this.props.sender,
       username: this.props.username,
-      message: "tetstetssjakjskajkasjskajakajskjaskssak",
-      date: new Date().toString().substr(4, 11),
+      message: this.props.message,
+      date:
+        this.props.date.toString().substr(0, 10) +
+        ", " +
+        this.props.date.toString().substr(11, 8),
     };
   }
   onChange = (e) => {
@@ -16,7 +19,7 @@ class Message extends Component {
     this.setState({ [name]: value });
   };
   render() {
-    const { sender, username, message, date } = this.state;
+    const { sender, username, message, date, time } = this.state;
     if (sender === username) {
       return (
         <div className="text-right">

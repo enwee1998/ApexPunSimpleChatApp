@@ -1,6 +1,5 @@
 import React from "react";
 import { VERIFY_USER } from "../Communicate";
-import "./logincss.css";
 
 class Login extends React.Component {
   constructor(props) {
