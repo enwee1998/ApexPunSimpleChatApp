@@ -36,13 +36,14 @@ class GroupPanel2 extends Component {
   render() {
     return (
       <div
-        className="overflow-auto"
+        className="overflow-auto bg-light"
         style={{ height: "500px", maxHeight: "500px" }}
       >
-        <div class="input-group mt-2">
+        <div class="input-group">
           <input
             type="text"
             class="form-control"
+            style={{ borderRadius: "0" }}
             placeholder="New Group"
             aria-label="New Group"
             aria-describedby="button-addon2"
@@ -52,7 +53,8 @@ class GroupPanel2 extends Component {
           />
           <div class="input-group-append">
             <button
-              class="btn btn-success"
+              class="btn btn-info"
+              style={{ borderRadius: "0" }}
               type="button"
               id="button-addon2"
               onClick={() => {
@@ -65,12 +67,22 @@ class GroupPanel2 extends Component {
           </div>
         </div>
         {this.props.groups.map((group) => (
-          <button
-            className="btn btn-outline-secondary mt-2"
-            style={{ borderRadius: "0" }}
-          >
-            {group}
-          </button>
+          <div className="btn-group btn-block mt-2" role="group">
+            <button
+              type="button"
+              className="col-9 btn btn-outline-secondary text-left"
+              style={{ border: "none", borderRadius: "0" }}
+            >
+              {group}
+            </button>
+            <button
+              type="button"
+              className="col-3 btn btn-success"
+              style={{ borderRadius: "0" }}
+            >
+              Join
+            </button>
+          </div>
         ))}
       </div>
     );
