@@ -4,7 +4,10 @@ body {
   font-family: "Kanit", sans-serif;
 }
 
-.padding-lr-0 {
-  padding-right: 0;
+.padding-l-0 {
   padding-left: 0;
+}
+
+.padding-r-0 {
+  padding-right: 0;
 }

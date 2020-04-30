@@ -38,7 +38,11 @@ class GroupPanel2 extends Component {
     return (
       <div
         className="overflow-auto bg-light"
-        style={{ height: "500px", maxHeight: "500px" }}
+        style={{
+          height: "500px",
+          maxHeight: "500px",
+          borderBottomLeftRadius: "5px",
+        }}
       >
         <div class="input-group">
           <input

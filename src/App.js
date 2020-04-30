@@ -6,7 +6,7 @@ import { USER_CONNECTED, LOGOUT } from "./Communicate";
 import Login from "./components/Login";
 import Navbar from "./components/Navbar";
 import GroupPanel2 from "./components/GroupPanel2";
-import ChatBox from "./components/ChatBox";
+import ChatBox2 from "./components/ChatBox2";
 
 const socketURL = "http://localhost:4000";
 
@@ -68,6 +68,7 @@ class App extends React.Component {
     let { joinedGroups } = this.state;
     socket.emit("leaveGroup", { username, groupName });
     joinedGroups = joinedGroups.filter((group) => group !== groupName);
+    this.setState({ joinedGroups });
   };
 
   joinGroup = (groupName) => {
@@ -95,29 +96,32 @@ class App extends React.Component {
   };
 
   render() {
-    const { title } = this.props;
     const { socket, user } = this.state;
     return (
-      <div className="container">
+      <div className="container-fluid bg-dark">
         {!user ? (
           <Login socket={socket} setUser={this.setUser} />
         ) : (
           // <ChatBox socket={socket} user={user} logout={this.logout} />
-          <div className="row vh-100">
-            <div className="col-8 mx-auto my-auto">
-              <div className="container-fluid">
-                <Navbar name={user.name} logout={this.logout} />
-                <div className="row">
-                  <div className="col-4">
-                    <GroupPanel2
-                      groups={this.state.groups}
-                      joinedGroups={this.state.joinedGroups}
-                      leaveGroup={this.leaveGroup}
-                      joinGroup={this.joinGroup}
-                      addGroup={this.addGroup}
-                    />
+          <div className="container-fluid bg-dark">
+            <div className="row vh-100">
+              <div className="col-8 mx-auto my-auto">
+                <div className="container-fluid">
+                  <Navbar name={user.name} logout={this.logout} />
+                  <div className="row">
+                    <div className="col-4 padding-r-0">
+                      <GroupPanel2
+                        groups={this.state.groups}
+                        joinedGroups={this.state.joinedGroups}
+                        leaveGroup={this.leaveGroup}
+                        joinGroup={this.joinGroup}
+                        addGroup={this.addGroup}
+                      />
+                    </div>
+                    <div className="col-8 padding-l-0">
+                      <ChatBox2 username={user.name} />
+                    </div>
                   </div>
-                  <div className="col-8">Chat</div>
                 </div>
               </div>
             </div>

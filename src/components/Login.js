@@ -60,7 +60,7 @@ class Login extends React.Component {
               />
               <div className="text-danger">{error ? error : null}</div>
               <div className="text-right">
-                <button type="submit" className="btn btn-sm btn-success mt-2">
+                <button type="submit" className="btn btn-sm btn-info mt-2">
                   Let's Chat!
                 </button>
               </div>
