@@ -12,7 +12,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jquery": "^3.5.0",
-    "mongoose": "^5.9.10",
+    "mongoose": "^8.9.5",
     "nginx": "0.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
